@@ -56,6 +56,7 @@ use std::io::prelude::*;
 use std::os::unix::io::{AsRawFd, FromRawFd, RawFd};
 use std::os::unix::net::UnixStream;
 use std::time;
+use std::prelude::v1::*;
 
 pub use interest::Interest;
 

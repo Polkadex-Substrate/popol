@@ -44,6 +44,13 @@
 #![deny(missing_docs)]
 #![allow(clippy::new_without_default)]
 #![allow(clippy::comparison_chain)]
+#![cfg_attr(not(target_env = "sgx"), no_std)]
+#![cfg_attr(target_env = "sgx", feature(rustc_private))]
+
+#[cfg(not(target_env = "sgx"))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
 use std::io;
 use std::io::prelude::*;
 use std::os::unix::io::{AsRawFd, FromRawFd, RawFd};

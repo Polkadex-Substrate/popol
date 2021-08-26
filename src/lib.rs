@@ -361,6 +361,14 @@ impl<K: Eq + Clone> Sources<K> {
         self.list.push(source);
     }
 }
+/// Custom wrapper added by gautham to make it compile
+struct Fd(RawFd);
+impl AsRawFd for Fd {
+    fn as_raw_fd(&self) -> RawFd {
+        self.0
+    }
+}
+
 
 /// Wakers are used to wake up `wait`.
 pub struct Waker {
@@ -437,7 +445,9 @@ impl Waker {
         match (&self.writer).write_all(&[0x1]) {
             Ok(_) => Ok(()),
             Err(e) if e.kind() == WouldBlock => {
-                Waker::reset(self.reader.as_raw_fd())?;
+                let temp = self.reader.as_raw_fd();
+                let wrapper: Fd = Fd(temp);
+                Waker::reset(wrapper)?;
                 self.wake()
             }
             Err(e) if e.kind() == Interrupted => self.wake(),
